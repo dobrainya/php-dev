@@ -1,5 +1,5 @@
 FROM php:7.4-fpm
-#php-7.4-dev
+
 ARG UID=1000
 
 #ADD conf/* /usr/local/etc/php-fpm.d/
@@ -19,7 +19,6 @@ RUN usermod --uid $UID www-data \
       libzip-dev \
       libxml2-dev \
       libwebp-dev \
-#      libc-client-dev \
       libmemcached-dev \
       libfreetype6-dev \
       libjpeg62-turbo-dev \
@@ -30,17 +29,14 @@ RUN usermod --uid $UID www-data \
       xdebug-3.0.0 \
       && \
     docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
-#    docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-install -j$(nproc)  \
       gd \
       pdo \
       zip \
       intl \
-#      imap \
       pgsql \
       pcntl \
       opcache \
-#      sysvsem \
       pdo_pgsql \
       && \
     docker-php-ext-enable \
@@ -52,19 +48,17 @@ RUN usermod --uid $UID www-data \
       && \
     cd /ext/php-memcached-3.4.0 && phpize && ./configure && make -j$(nproc) && make install && docker-php-ext-enable memcached && \
     cd /ext/php-spx-0.4.22 && phpize && ./configure && make -j$(nproc) && make install && docker-php-ext-enable spx && \
-    rm -rf /ext && apt-get autoremove && apt-get remove -y \
+    apt remove -y \
       zlib1g-dev \
       libzip-dev \
       libpq-dev \
       libpng-dev \
-      php7.4-dev \
       libwebp-dev \
-      libc-client-dev \
       libmemcached-dev \
       libfreetype6-dev \
       libjpeg62-turbo-dev \
       && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* /tmp/* /var/tmp/*
+    apt autoremove -y && apt clean && rm -rf /ext /var/lib/apt/lists/* /var/cache/apt/archives/* /tmp/* /var/tmp/*
 
 WORKDIR /var/www
 
