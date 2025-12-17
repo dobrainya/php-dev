@@ -48,28 +48,19 @@ RUN apk --no-cache add shadow && \
       apcu \
       redis \
       xdebug \
-      pdo_pgsql  \
+      pdo_pgsql \
       && \
-    cd /ext/php-memcached-3.4.0 && phpize && ./configure && make -j$(nproc) && make install && docker-php-ext-enable memcached && \
-    cd /ext/php-spx-0.4.22 && phpize && ./configure && make -j$(nproc) && make install && docker-php-ext-enable spx && \
-    rm -rf /ext && apk del && apk del \
+    docker-php-ext-configure /ext/php-spx-0.4.22 && \
+    docker-php-ext-configure /ext/php-memcached-3.4.0 && \
+    docker-php-ext-install -j$(nproc) /ext/php-spx-0.4.22 /ext/php-memcached-3.4.0 && \
+    docker-php-ext-enable spx memcached && \
+    apk del \
       shadow \
-      icu-dev \
       autoconf \
-      zlib-dev \
-      libzip-dev \
-      libpq-dev \
       build-base \
-      libpng-dev \
-      libwebp-dev \
-      freetype-dev \
-      libmemcached-dev \
-      libjpeg-turbo-dev \
       && \
-    rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+    rm -rf /ext /var/cache/apk/* /tmp/* /var/tmp/*
 
 WORKDIR /var/www
 
 USER www-data:www-data
-
-CMD ["php-fpm"]
