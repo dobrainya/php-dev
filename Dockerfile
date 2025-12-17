@@ -46,22 +46,12 @@ RUN usermod --uid $UID www-data \
       xdebug \
       pdo_pgsql  \
       && \
-    cd /ext/php-memcached-3.4.0 && phpize && ./configure && make -j$(nproc) && make install && docker-php-ext-enable memcached && \
-    cd /ext/php-spx-0.4.22 && phpize && ./configure && make -j$(nproc) && make install && docker-php-ext-enable spx && \
-    apt remove -y \
-      zlib1g-dev \
-      libzip-dev \
-      libpq-dev \
-      libpng-dev \
-      libwebp-dev \
-      libmemcached-dev \
-      libfreetype6-dev \
-      libjpeg62-turbo-dev \
-      && \
+    docker-php-ext-configure /ext/php-spx-0.4.22 && \
+    docker-php-ext-configure /ext/php-memcached-3.4.0 && \
+    docker-php-ext-install -j$(nproc) /ext/php-spx-0.4.22 /ext/php-memcached-3.4.0 && \
+    docker-php-ext-enable spx memcached && \
     apt autoremove -y && apt clean && rm -rf /ext /var/lib/apt/lists/* /var/cache/apt/archives/* /tmp/* /var/tmp/*
 
 WORKDIR /var/www
 
 USER www-data:www-data
-
-CMD ["php-fpm"]

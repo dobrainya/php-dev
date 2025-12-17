@@ -1,5 +1,5 @@
 ### build
 
 ```bash
-docker build --tag dobrainya/php:7.4-fpm .
+docker build --no-cache --tag dobrainya/php-dev:7.4-fpm .
 ```
