@@ -12,6 +12,7 @@ RUN apk --no-cache add shadow && \
     apk update  \
       && \
     apk --no-cache add \
+      git \
       curl \
       icu-dev \
       autoconf \
@@ -54,6 +55,7 @@ RUN apk --no-cache add shadow && \
     docker-php-ext-configure /ext/php-memcached-3.4.0 && \
     docker-php-ext-install -j$(nproc) /ext/php-spx-0.4.22 /ext/php-memcached-3.4.0 && \
     docker-php-ext-enable spx memcached && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     apk del \
       shadow \
       autoconf \
